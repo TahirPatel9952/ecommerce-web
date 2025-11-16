@@ -1,0 +1,10 @@
+<nav>
+  <a routerLink="/">Home</a>
+  <a routerLink="/products">Products</a>
+  <a routerLink="/cart">Cart</a>
+  <a routerLink="/login" *ngIf="!isAuthenticated">Login</a>
+  <a routerLink="/signup" *ngIf="!isAuthenticated">Signup</a>
+  <a (click)="logout()" *ngIf="isAuthenticated">Logout</a>
+</nav>
+<router-outlet></router-outlet>
+

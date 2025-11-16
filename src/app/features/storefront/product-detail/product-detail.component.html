@@ -1,0 +1,55 @@
+<div class="product-detail-container">
+  <div class="loading" *ngIf="loading">Loading product...</div>
+  
+  <div class="product-detail" *ngIf="!loading && product">
+    <div class="product-images">
+      <img [src]="product.primaryImage" [alt]="product.name" class="main-image">
+    </div>
+    
+    <div class="product-info">
+      <h1>{{ product.name }}</h1>
+      <p class="category">{{ product.categoryName }}</p>
+      <p class="price">${{ product.basePrice | number:'1.2-2' }}</p>
+      <p class="description">{{ product.description }}</p>
+      
+      <div class="variants" *ngIf="product.variants && product.variants.length > 0">
+        <label>Select Variant:</label>
+        <select [(ngModel)]="selectedVariantId" (change)="onVariantChange($event)" class="variant-select">
+          <option *ngFor="let variant of product.variants" [value]="variant.id">
+            {{ variant.attributes }} - ${{ variant.price | number:'1.2-2' }}
+            <span *ngIf="variant.stock > 0">({{ variant.stock }} in stock)</span>
+            <span *ngIf="variant.stock === 0">(Out of stock)</span>
+          </option>
+        </select>
+      </div>
+      
+      <div class="quantity-selector">
+        <label>Quantity:</label>
+        <div class="quantity-controls">
+          <button (click)="decrementQuantity()" [disabled]="quantity <= 1" class="qty-btn">-</button>
+          <input type="number" [(ngModel)]="quantity" min="1" [max]="product.totalStock" class="qty-input" readonly>
+          <button (click)="incrementQuantity()" [disabled]="quantity >= product.totalStock" class="qty-btn">+</button>
+        </div>
+      </div>
+      
+      <div class="stock-info">
+        <span *ngIf="product.totalStock > 0" class="in-stock">In Stock ({{ product.totalStock }} available)</span>
+        <span *ngIf="product.totalStock === 0" class="out-of-stock">Out of Stock</span>
+      </div>
+      
+      <button class="btn btn-primary" 
+              [disabled]="product.totalStock === 0 || addingToCart || !selectedVariantId"
+              (click)="addToCart()">
+        {{ addingToCart ? 'Adding...' : 'Add to Cart' }}
+      </button>
+      
+      <a routerLink="/products" class="btn btn-secondary">Back to Products</a>
+    </div>
+  </div>
+  
+  <div class="not-found" *ngIf="!loading && !product">
+    <p>Product not found.</p>
+    <a routerLink="/products" class="btn btn-primary">Back to Products</a>
+  </div>
+</div>
+
